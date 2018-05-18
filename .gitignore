@@ -1,5 +1,9 @@
 # Prerequisites
 *.d
+*.sw*
+.vscode
+._*
+.nfs.*
 
 # Object files
 *.o

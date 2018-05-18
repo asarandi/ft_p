@@ -1,0 +1,285 @@
+e1z4r9p26% nc speedtest.tele2.net 21
+220 (vsFTPd 2.3.5)
+USER anonymous
+331 Please specify the password.
+PASS banana
+230 Login successful.
+SYST
+215 UNIX Type: L8
+CWD upload
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (90,130,70,73,91,17).
+LIST
+150 Here comes the directory listing.
+226 Directory send OK.
+PASV
+227 Entering Passive Mode (90,130,70,73,98,135).
+STOR sample2.dat
+150 Ok to send data.
+226 Transfer complete.
+PASV
+227 Entering Passive Mode (90,130,70,73,115,75).
+LIST
+150 Here comes the directory listing.
+226 Directory send OK.
+421 Timeout.
+
+
+server started, listening on 127.0.0.1:4242
+incoming connection from: 127.0.0.1:38954
+USER banana
+SYST
+PWD
+PORT 127,0,0,1,193,68
+LIST
+SYST
+CWD abc
+PWD
+PORT 127,0,0,1,215,190
+LIST
+PORT 127,0,0,1,207,128
+RETR orange.txt
+PORT 127,0,0,1,140,142
+STOR srv.c
+PORT 127,0,0,1,129,57
+STOR srv.c
+PORT 127,0,0,1,139,9
+STOR srv.c
+^C
+
+-------------------------
+e1z4r12p10% nc ftp.us.debian.org 21
+220 (vsFTPd 3.0.2)
+PWD
+530 Please login with USER and PASS.
+USER anonymous
+331 Please specify the password.
+PASS banana
+230 Login successful.
+SYST
+215 UNIX Type: L8
+PWD
+257 "/"
+LIST
+425 Use PORT or PASV first.
+PASV
+227 Entering Passive Mode (128,61,240,89,63,54).
+LIST
+425 Failed to establish connection.
+STOR abc.txt
+550 Permission denied.
+RETR abc.txt
+425 Use PORT or PASV first.
+PORT 127,0,0,1,123,234
+500 Illegal PORT command.
+CWD abc
+550 Failed to change directory.
+CWD /
+250 Directory successfully changed.
+PASV
+227 Entering Passive Mode (128,61,240,89,121,90).
+LIST
+425 Security: Bad IP connecting.
+PASV
+227 Entering Passive Mode (128,61,240,89,23,141).
+PWD
+257 "/"
+LIST
+425 Security: Bad IP connecting.
+^C
+e1z4r12p10% nc ftp.us.debian.org 21
+
+^C
+e1z4r12p10% 
+e1z4r12p10% nc ftp.us.debian.org 21
+PWD
+^C
+e1z4r12p10% nc ftp://speedtest.tele2.net
+nc: missing hostname and port
+usage: nc [-46AacCDdEFhklMnOortUuvz] [-K tc] [-b boundif] [-i interval] [-p source_port] [--apple-delegate-pid pid] [--apple-delegate-uuid uuid]
+	  [-s source_ip_address] [-w timeout] [-X proxy_version]
+	  [-x proxy_address[:port]] [hostname] [port[s]]
+e1z4r12p10% nc ftp://speedtest.tele2.net 21
+nc: getaddrinfo: nodename nor servname provided, or not known
+e1z4r12p10% nc speedtest.tele2.net 21 
+220 (vsFTPd 2.3.5)
+SYST
+530 Please login with USER and PASS.
+USER anonymous
+331 Please specify the password.
+PASS banana
+230 Login successful.
+PASV
+227 Entering Passive Mode (90,130,70,73,116,217).
+LIST
+150 Here comes the directory listing.
+226 Directory send OK.
+CWD banana
+550 Failed to change directory.
+CWD upload
+250 Directory successfully changed.
+LIST
+425 Use PORT or PASV first.
+PASV
+227 Entering Passive Mode (90,130,70,73,83,189).
+LIST
+150 Here comes the directory listing.
+226 Directory send OK.
+PASV
+227 Entering Passive Mode (90,130,70,73,101,75).
+RETR vixen.17.12.25.anya.olsen.and.evelyn.claire.4k.mp4
+
+^C
+e1z4r12p10% nc speedtest.tele2.net 21
+220 (vsFTPd 2.3.5)
+USER apple
+530 This FTP server is anonymous only.
+PASS banana
+503 Login with USER first.
+USER anon
+530 This FTP server is anonymous only.
+USER anonymous
+331 Please specify the password.
+PASS abanana
+230 Login successful.
+cd upload
+500 Unknown command.
+CWD upload
+250 Directory successfully changed.
+LIST
+425 Use PORT or PASV first.
+PASV
+227 Entering Passive Mode (90,130,70,73,102,159).
+LIST
+150 Here comes the directory listing.
+226 Directory send OK.
+PASV
+227 Entering Passive Mode (90,130,70,73,103,80).
+RETR vixen.17.12.25.anya.olsen.and.evelyn.claire.4k.mp4
+550 Failed to open file.
+PWD
+257 "/upload"
+RETR 100MB.tar
+550 Failed to open file.
+LIST
+150 Here comes the directory listing.
+226 Directory send OK.
+PASV
+227 Entering Passive Mode (90,130,70,73,116,181).
+RETR 100MB.zip
+550 Failed to open file.
+RETR MOVIE.rar
+550 Failed to open file.
+RETR upload_file.txt
+550 Failed to open file.
+RETR *
+550 Failed to open file.
+cd ..
+500 Unknown command.
+cwd ..
+250 Directory successfully changed.
+LIST
+150 Here comes the directory listing.
+226 Directory send OK.
+PASV
+227 Entering Passive Mode (90,130,70,73,94,235).
+RETR 1GB.zip
+150 Opening BINARY mode data connection for 1GB.zip (1073741824 bytes).
+426 Failure writing network stream.
+
+
+PWD
+257 "/"
+HELP
+214-The following commands are recognized.
+ ABOR ACCT ALLO APPE CDUP CWD  DELE EPRT EPSV FEAT HELP LIST MDTM MKD
+ MODE NLST NOOP OPTS PASS PASV PORT PWD  QUIT REIN REST RETR RMD  RNFR
+ RNTO SITE SIZE SMNT STAT STOR STOU STRU SYST TYPE USER XCUP XCWD XMKD
+ XPWD XRMD
+214 Help OK.
+HELP MKD
+214-The following commands are recognized.
+ ABOR ACCT ALLO APPE CDUP CWD  DELE EPRT EPSV FEAT HELP LIST MDTM MKD
+ MODE NLST NOOP OPTS PASS PASV PORT PWD  QUIT REIN REST RETR RMD  RNFR
+ RNTO SITE SIZE SMNT STAT STOR STOU STRU SYST TYPE USER XCUP XCWD XMKD
+ XPWD XRMD
+214 Help OK.
+SYST 
+215 UNIX Type: L8
+USER banana
+530 Can't change from guest user.
+NOOP
+200 NOOP ok.
+MDTM
+550 Could not get file modification time.
+ALLO
+202 ALLO command ignored.
+APPE
+550 Permission denied.
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/"
+CDUP
+250 Directory successfully changed.
+PWD
+257 "/"
+EPRT
+500 Bad EPRT protocol.
+EPSV
+229 Entering Extended Passive Mode (|||23617|).
+PASV
+227 Entering Passive Mode (90,130,70,73,85,72).
+PORT
+500 Illegal PORT command.
+REIN
+502 REIN not implemented.
+RMD
+550 Permission denied.
+RNFR
+550 Permission denied.
+RNTO
+550 Permission denied.
+SITE
+550 Permission denied.
+SIZE
+550 Could not get file size.
+SIZE 1GB.zip
+213 1073741824
+STAT
+211-FTP server status:
+     Connected to ::ffff:64.62.224.29
+     Logged in as ftp
+     TYPE: ASCII
+     No session bandwidth limit
+     Session timeout in seconds is 300
+     Control connection is plain text
+     Data connections will be plain text
+     At session startup, client count was 208
+     vsFTPd 2.3.5 - secure, fast, stable
+211 End of status
+XCUP
+250 Directory successfully changed.
+PWD
+257 "/"
+STOU
+425 Use PORT or PASV first.
+STRU
+504 Bad STRU command.
+TYPE
+500 Unrecognised TYPE command.
+ABOR
+225 No transfer to ABOR.
+ACCT
+502 ACCT not implemented.
+OPTS
+501 Option not understood.
+ACCT
+502 ACCT not implemented.
+MDTM
+550 Could not get file modification time.
+MDTM 1MB.zip
+213 20160219174152
+
+
