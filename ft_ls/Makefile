@@ -12,7 +12,7 @@
 
 NAME	= ft_ls
 CC		= gcc
-CFLAGS	= -O2 -Wall -Werror -Wextra
+CFLAGS	= -O2 -Wall -Werror -Wextra -Wno-unused-result
 
 C_FILES	=	build_list.c \
 			clear_structs.c \
@@ -40,6 +40,11 @@ O_FILES	= $(C_FILES:%.c=%.o)
 SRC		= $(addprefix src/,$(C_FILES))
 OBJ		= $(addprefix obj/,$(O_FILES))
 LIB		= -L ../libft/ -lft
+
+ifeq ($(shell uname -s),Linux)
+	LIB += -lacl
+endif
+
 INC		= -I ../libft/inc/ -I inc/
 
 all: $(NAME)

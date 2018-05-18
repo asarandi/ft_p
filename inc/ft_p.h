@@ -19,6 +19,7 @@
 # include <arpa/inet.h>
 # include <fcntl.h>
 # include <sys/stat.h>
+# include <sys/wait.h>
 # include "libft.h"
 # include "libftprintf.h"
 # include "functions.h"

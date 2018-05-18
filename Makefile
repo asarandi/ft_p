@@ -18,7 +18,7 @@ SERVER_OBJ	=	$(addprefix obj/, $(SERVER_SRC:.c=.o))
 CLIENT_SRC	+=	client.c
 CLIENT_OBJ	=	$(addprefix obj/, $(CLIENT_SRC:.c=.o))
 CC			=	gcc
-CFLAGS		+=	-O2 -Wextra -Wall -Werror
+CFLAGS		+=	-O2 -Wextra -Wall -Werror -Wno-unused-result
 INC			=	-I libft/inc -I inc/
 LIB			=	-L libft/ -lft
 LIBFT		=	libft/libft.a

@@ -12,6 +12,12 @@
 
 #include "ft_ls.h"
 
+#ifdef __linux__
+#define st_mtimespec	st_mtim
+#define st_atimespec	st_atim
+#define st_ctimespec	st_ctim
+#endif
+
 int		sort_by_mtime_asc(t_file *file1, t_file *file2)
 {
 	if (file2->st.st_mtimespec.tv_sec > file1->st.st_mtimespec.tv_sec)

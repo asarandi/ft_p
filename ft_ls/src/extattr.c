@@ -18,7 +18,11 @@ void	print_extended_attributes(char *path, t_file *file)
 	char	*fullpath;
 
 	fullpath = ft_strjoin(path, file->name);
+#ifdef __APPLE__
 	if ((listxattr(fullpath, NULL, 0, XATTR_NOFOLLOW)) > 0)
+#elif __linux__
+	if ((listxattr(fullpath, NULL, 0)) > 0)
+#endif
 		write(1, "@", 1);
 	else
 	{

@@ -18,7 +18,6 @@
 # include <sys/types.h>
 # include <pwd.h>
 # include <grp.h>
-# include <uuid/uuid.h>
 # include <sys/xattr.h>
 # include <time.h>
 # include <unistd.h>
@@ -33,6 +32,18 @@
 # include <sys/acl.h>
 
 # define TAB_SIZE 8
+
+# ifdef __linux__
+# define st_mtimespec		st_mtim
+# define st_atimespec		st_atim
+# define st_ctimespec		st_ctim
+# define st_birthtimespec	st_mtim
+# define acl_get_link_np	acl_get_file
+# define ACL_TYPE_EXTENDED	ACL_TYPE_ACCESS
+# include <sys/sysmacros.h>
+# define	S_ISWHT(m)	((m & 0170000) == 0160000)
+# endif
+
 
 typedef uintmax_t	t_x;
 

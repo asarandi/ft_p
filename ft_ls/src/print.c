@@ -49,7 +49,7 @@ void	print_size(t_file *list)
 		{
 			ft_fprintf(1, "%3d, ", major(list->st.st_rdev));
 			if ((minor(list->st.st_rdev) > 255)
-					|| (minor(list->st.st_rdev) < 0))
+					|| ((int)minor(list->st.st_rdev) < 0))
 				ft_fprintf(1, "0x%08x ", minor(list->st.st_rdev));
 			else
 				ft_fprintf(1, "%3d ", minor(list->st.st_rdev));
