@@ -1,10 +1,24 @@
 NAME		=	ft_p
-SERVER_SRC	+=	server.c whitespace.c
+SERVER_SRC	=	char_array.c \
+				file_op.c \
+				server.c \
+				server_cmds_1.c \
+				server_cmds_2.c \
+				server_cmds_3.c \
+				server_cmds_4.c \
+				server_cmds_5.c \
+				server_core.c \
+				server_incoming.c \
+				server_sockets.c \
+				server_utils.c \
+				whitespace.c
+
 SERVER_OBJ	=	$(addprefix obj/, $(SERVER_SRC:.c=.o))
+
 CLIENT_SRC	+=	client.c
 CLIENT_OBJ	=	$(addprefix obj/, $(CLIENT_SRC:.c=.o))
 CC			=	gcc
-CFLAGS		+=	-g -Wextra -Wall -Werror
+CFLAGS		+=	-O2 -Wextra -Wall -Werror
 INC			=	-I libft/inc -I inc/
 LIB			=	-L libft/ -lft
 LIBFT		=	libft/libft.a

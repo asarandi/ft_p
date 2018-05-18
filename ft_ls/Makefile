@@ -6,13 +6,13 @@
 #    By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/26 20:09:21 by asarandi          #+#    #+#              #
-#    Updated: 2018/05/18 03:06:08 by asarandi         ###   ########.fr        #
+#    Updated: 2018/05/18 10:26:43 by asarandi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= ft_ls
 CC		= gcc
-CFLAGS	= -O3 -Wall -Werror -Wextra
+CFLAGS	= -O2 -Wall -Werror -Wextra
 
 C_FILES	=	build_list.c \
 			clear_structs.c \

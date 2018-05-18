@@ -6,13 +6,13 @@
 #    By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/09/20 17:41:00 by asarandi          #+#    #+#              #
-#    Updated: 2018/05/10 17:52:33 by asarandi         ###   ########.fr        #
+#    Updated: 2018/05/18 10:26:35 by asarandi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		=	libft.a
 CC			=	gcc
-CFLAGS		=	-g -Wall -Werror -Wextra
+CFLAGS		=	-O2 -Wall -Werror -Wextra
 INC			=	-I inc/
 SRCFILES	=	ft_atoi.c \
 				ft_base64encode.c \
