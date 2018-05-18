@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/10 02:02:26 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/18 03:26:58 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/18 08:56:49 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -549,23 +549,17 @@ void	sigint_handler(int signo)
 
 void	server_init(t_ftp *f)
 {
-	if (f->home != NULL)
-		free(f->home);
-	if (f->ft_ls != NULL)
-		free(f->ft_ls);
 	f->home = getcwd(NULL, 0);
 	if (f->home[ft_strlen(f->home) - 1] != '/')
 		f->ft_ls = ft_strjoin(f->home, "/ft_ls/ft_ls");
 	else
 		f->ft_ls = ft_strjoin(f->home, "ft_ls/ft_ls");
-	f->listen_addr = LISTEN_ADDR;	/* XXX */
-	f->listen_port = LISTEN_PORT;	/* XXX */
 	if (incoming_create(f) != 1)
 		server_exit(f, f->error, EXIT_FAILURE);
 	ft_printf("server started, listening on %s:%d\n",
-			f->listen_addr, f->listen_port);
+			inet_ntoa(f->address.sin_addr),
+			ntohs(f->address.sin_port));
 	(void)signal(SIGINT, sigint_handler);
-	f->running = 1;
 	g_ftp = f;
 	return ;
 }
@@ -613,14 +607,51 @@ void	server_fork(t_ftp *f)
 	return ;
 }
 
+void	server_show_usage(t_ftp *f)
+{
+	ft_printf("welcome to %s\n", FTP_SERVER_NAME);
+	ft_printf("usage:\t%s <ip.ad.dr.es> <port>\n", f->argv[0]);
+	ft_printf(" or\t%s <port>\n", f->argv[0]);
+	ft_printf(" or\t%s\n", f->argv[0]);
+	server_exit(f, "", 0);
+}
+
+void	server_parse(t_ftp *f, int argc, char **argv, char **envp)
+{
+	int	i;
+
+	f->argc = argc;
+	f->argv = argv;
+	f->envp = envp;
+	if (f->argc > 3)
+		server_show_usage(f);
+	i = 1;
+	while (i < f->argc)
+	{
+		if ((ft_strcmp(f->argv[i], "-h") == 0) ||
+				(ft_strcmp(f->argv[i], "--help") == 0))
+			server_show_usage(f);
+		i++;
+	}
+	f->listen_addr = LISTEN_ADDR;
+	f->listen_port = LISTEN_PORT;
+	if (f->argc == 2)
+		f->listen_port = ft_atoi(f->argv[1]);
+	if (f->argc == 3)
+	{
+		if (ft_strcmp(f->argv[1], "localhost") != 0)
+			f->listen_addr = f->argv[1];
+		f->listen_port = ft_atoi(f->argv[2]);
+	}
+}
+
 void	server_start(int argc, char **argv, char **envp)
 {
 	t_ftp	*f;
 
 	f = ft_memalloc(sizeof(t_ftp));
-	f->argc = argc;
-	f->argv = argv;
-	f->envp = envp;
+	f->running = 1;
+	server_parse(f, argc, argv, envp);
 	server_init(f);
 	server_accept(f);
 	server_fork(f);

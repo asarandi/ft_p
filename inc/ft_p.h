@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 17:07:05 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/18 00:47:58 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/18 08:19:47 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@
 	readdir(3), 
 	closedir(3)
 	chdir(2), 
-	mkdir(2), 
+	22222mkdir(2), 
 	unlink(2)
 	read(2), 
 	write(2), 
@@ -66,7 +66,7 @@
 	free(3),
 */
 
-#define LISTEN_PORT		2229
+#define LISTEN_PORT		4242
 #define LISTEN_ADDR		"127.0.0.1"
 //"10.114.9.26"
 //"127.0.0.1"
