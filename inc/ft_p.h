@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 17:07:05 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/18 10:32:37 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 02:01:57 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define E_ACCEPT			"error: accept() failed\n"
 # define E_FORK				"error: fork() failed\n"
 # define CMD_COUNT			18
+# define BIN_LS				"/bin/ls"
 
 typedef struct			s_ftp
 {
@@ -41,7 +42,7 @@ typedef struct			s_ftp
 	char				**argv;
 	char				**envp;
 	char				*home;
-	char				*ft_ls;
+	char				*bin_ls;
 	char				*listen_addr;
 	int					listen_port;
 	int					socket;

@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:51:59 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/18 10:19:44 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 02:00:50 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ void	server_cleanup(t_ftp *f)
 {
 	if (f->home != NULL)
 		free(f->home);
-	if (f->ft_ls != NULL)
-		free(f->ft_ls);
 	free(f);
 	return ;
 }

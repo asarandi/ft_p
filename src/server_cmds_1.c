@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:20:11 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/18 10:21:13 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 03:36:54 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int		cmd_pasv(t_ftp *f)
 int		cmd_list_fork(t_ftp *f)
 {
 	pid_t	pid;
+	char	*arg1;
 
 	if ((pid = fork()) == -1)
 	{
@@ -61,10 +62,12 @@ int		cmd_list_fork(t_ftp *f)
 		close(f->passive->client);
 		close(STDIN_FILENO);
 		close(STDERR_FILENO);
-		if ((f->req[1] != NULL) && (ft_strcmp(f->req[1], "-a") == 0))
-			execl(f->ft_ls, f->ft_ls, "-la", f->req[2], NULL);
+		arg1 = word(f->buf, 1);
+		if ((arg1 != NULL) && (ft_strncmp("-a", arg1, 2) == 0)
+				&& ((arg1[2] == 0) || (ft_isspace(arg1[2]))))
+			execl(f->bin_ls, f->bin_ls, "-la", word(f->buf, 2), NULL);
 		else
-			execl(f->ft_ls, f->ft_ls, "-l", f->req[1], NULL);
+			execl(f->bin_ls, f->bin_ls, "-l", word(f->buf, 1), NULL);
 		exit(0);
 	}
 	else

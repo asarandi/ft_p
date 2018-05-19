@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:23:25 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/18 09:25:25 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 03:21:29 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	cmd_stor_receive(t_ftp *f)
 	ssize_t	buf_len;
 
 	(void)ftp_send_text(f, 150, "Ok to send data.");
-	fd = open(f->req[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	fd = open(word(f->buf, 1), O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
 	{
 		(void)ftp_send_text(f, 550, "Failed to open file.");
@@ -64,10 +64,10 @@ int	cmd_retr(t_ftp *f)
 	{
 		if (incoming_accept(f->passive) == 1)
 		{
-			if ((data = file_get_contents(f->req[1])) != NULL)
+			if ((data = file_get_contents(word(f->buf, 1))) != NULL)
 			{
 				(void)ftp_send_text(f, 150, "Sending over file");
-				write(f->passive->client, data, file_get_size(f->req[1]));
+				write(f->passive->client, data, file_get_size(word(f->buf, 1)));
 				free(data);
 				(void)ftp_send_text(f, 226, "File sent successfully.");
 			}

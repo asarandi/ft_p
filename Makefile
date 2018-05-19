@@ -26,7 +26,7 @@ FT_LS		=	ft_ls/ft_ls
 
 all: server client
 
-server: $(SERVER_OBJ) | $(LIBFT) $(FT_LS)
+server: $(SERVER_OBJ) | $(LIBFT)
 	$(CC) $(CFLAGS) $^ -o $@ $(LIB)
 
 client: $(CLIENT_OBJ) | $(LIBFT)
@@ -34,9 +34,6 @@ client: $(CLIENT_OBJ) | $(LIBFT)
 
 libft/libft.a:
 	make -C libft/
-
-ft_ls/ft_ls:
-	make -C ft_ls/
 
 objdir:
 	mkdir -p obj/
@@ -53,11 +50,9 @@ rmbin:
 again: rmobj rmbin all
 
 clean: rmobj
-	make clean -C ft_ls/
 	make clean -C libft/
 
 fclean: clean rmbin
-	make fclean -C ft_ls/
 	make fclean -C libft/
 
 re: fclean all

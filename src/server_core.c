@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:47:59 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/18 10:22:31 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 02:02:18 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,7 @@ static int	(*g_functions[]) (t_ftp *) = {
 void	server_init(t_ftp *f)
 {
 	f->home = getcwd(NULL, 0);
-	if (f->home[ft_strlen(f->home) - 1] != '/')
-		f->ft_ls = ft_strjoin(f->home, "/ft_ls/ft_ls");
-	else
-		f->ft_ls = ft_strjoin(f->home, "ft_ls/ft_ls");
+	f->bin_ls = BIN_LS;
 	if (incoming_create(f) != 1)
 		server_exit(f, f->error, EXIT_FAILURE);
 	ft_printf("server started, listening on %s:%d\n",

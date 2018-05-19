@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:31:56 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/18 10:23:52 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 03:24:41 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	cmd_size(t_ftp *f)
 {
 	ssize_t	size;
 
-	size = file_get_size(f->req[1]);
+	size = file_get_size(word(f->buf, 1));
 	if (size == -1)
 	{
 		ftp_send_text(f, 550, "Could not get file size.");
