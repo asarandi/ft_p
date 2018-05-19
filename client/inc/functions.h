@@ -6,14 +6,14 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 11:40:50 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 03:27:09 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 04:55:02 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FUNCTIONS_H
 # define FUNCTIONS_H
 
-# include "ft_p.h"
+# include "client.h"
 
 typedef struct s_ftp	t_ftp;
 

@@ -6,11 +6,11 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:47:59 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 02:02:18 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 05:39:22 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_p.h"
+#include "server.h"
 
 const char	*g_cmds[] = {
 	"SYST", "PASV", "PORT", "PWD", "CWD", "LIST", "STOR",
@@ -22,19 +22,6 @@ static int	(*g_functions[]) (t_ftp *) = {
 	&cmd_retr, &cmd_user, &cmd_pass, &cmd_help, &cmd_mkd, &cmd_quit, &cmd_size,
 	&cmd_type, &cmd_cdup, &cmd_dele, &cmd_rmd};
 
-void	server_init(t_ftp *f)
-{
-	f->home = getcwd(NULL, 0);
-	f->bin_ls = BIN_LS;
-	if (incoming_create(f) != 1)
-		server_exit(f, f->error, EXIT_FAILURE);
-	ft_printf("server started, listening on %s:%d\n",
-			inet_ntoa(f->address.sin_addr),
-			ntohs(f->address.sin_port));
-	(void)signal(SIGINT, sigint_handler);
-	g_ftp = f;
-	return ;
-}
 
 void	server_accept(t_ftp *f)
 {

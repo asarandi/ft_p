@@ -1,58 +1,51 @@
 NAME		=	ft_p
-SERVER_SRC	=	char_array.c \
-				file_op.c \
-				server.c \
-				server_cmds_1.c \
-				server_cmds_2.c \
-				server_cmds_3.c \
-				server_cmds_4.c \
-				server_cmds_5.c \
-				server_core.c \
-				server_incoming.c \
-				server_sockets.c \
-				server_utils.c \
-				whitespace.c
-
-SERVER_OBJ	=	$(addprefix obj/, $(SERVER_SRC:.c=.o))
-
-CLIENT_SRC	+=	client.c
-CLIENT_OBJ	=	$(addprefix obj/, $(CLIENT_SRC:.c=.o))
-CC			=	gcc
-CFLAGS		+=	-O2 -Wextra -Wall -Werror -Wno-unused-result
-INC			=	-I libft/inc -I inc/
-LIB			=	-L libft/ -lft
+SERVER		=	server/server
+CLIENT		=	client/client
 LIBFT		=	libft/libft.a
-FT_LS		=	ft_ls/ft_ls
 
 all: server client
 
-server: $(SERVER_OBJ) | $(LIBFT)
-	$(CC) $(CFLAGS) $^ -o $@ $(LIB)
+###############################################################
 
-client: $(CLIENT_OBJ) | $(LIBFT)
-	$(CC) $(CFLAGS) $^ -o $@ $(LIB)
+server: $(LIBFT) $(SERVER)
+
+server/server:
+	make -C server/
+
+server_clean:
+	make clean -C server/
+
+server_fclean:
+	make fclean -C server/
+
+###############################################################
+
+client: $(LIBFT) $(CLIENT)
+
+client/client:
+	make -C client/
+
+client_clean:
+	make clean -C client/
+
+client_fclean:
+	make fclean -C client/
+
+###############################################################
 
 libft/libft.a:
 	make -C libft/
 
-objdir:
-	mkdir -p obj/
-
-obj/%.o: src/%.c | objdir
-	$(CC) $(CFLAGS) -c $< -o $@ $(INC)
-
-rmobj:
-	rm -rf obj/
-
-rmbin:
-	rm -rf server client
-
-again: rmobj rmbin all
-
-clean: rmobj
+libft_clean:
 	make clean -C libft/
 
-fclean: clean rmbin
+libft_fclean:
 	make fclean -C libft/
+
+###############################################################
+
+clean: server_clean client_clean libft_clean
+
+fclean: clean server_fclean client_fclean libft_fclean
 
 re: fclean all

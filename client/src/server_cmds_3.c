@@ -6,11 +6,11 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:25:41 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 03:23:31 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 04:21:53 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_p.h"
+#include "server.h"
 
 int	cmd_dele(t_ftp *f)
 {

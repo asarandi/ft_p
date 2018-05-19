@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_p.h                                             :+:      :+:    :+:   */
+/*   server.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 17:07:05 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 02:01:57 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 07:34:25 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_P_H
-# define FT_P_H
+#ifndef SERVER_H
+# define SERVER_H
 
 # include <sys/socket.h>
 # include <sys/types.h>
@@ -26,7 +26,7 @@
 
 # define LISTEN_PORT		4242
 # define LISTEN_ADDR		"127.0.0.1"
-# define FTP_SERVER_NAME	"(ftp@42 v0.1a)"
+# define FTP_SERVER_NAME	"(ftp-server@42 v0.1a)"
 # define E_SOCKET			"error: socket() failed\n"
 # define E_SETSOCKOPT		"error: setsockopt() failed\n"
 # define E_BIND				"error: bind() failed\n"

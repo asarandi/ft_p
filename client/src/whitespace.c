@@ -6,11 +6,11 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/16 05:10:49 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/16 05:11:50 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 04:22:44 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_p.h"
+#include "server.h"
 
 void	whitespace_transform(char *str)
 {

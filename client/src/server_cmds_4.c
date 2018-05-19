@@ -6,11 +6,11 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:31:25 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/18 09:31:34 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 04:22:00 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_p.h"
+#include "server.h"
 
 int	cmd_user(t_ftp *f)
 {

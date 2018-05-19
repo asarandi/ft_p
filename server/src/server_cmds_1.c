@@ -6,11 +6,11 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:20:11 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 03:36:54 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 09:53:07 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_p.h"
+#include "server.h"
 
 void	passive_cleanup(t_ftp *f)
 {
@@ -79,9 +79,9 @@ int		cmd_list(t_ftp *f)
 {
 	if (f->use_passive == 1)
 	{
-		(void)ftp_send_text(f, 150, "Here comes the directory listing.");
 		if (incoming_accept(f->passive) == 1)
 		{
+			(void)ftp_send_text(f, 150, "Here comes the directory listing.");
 			(void)cmd_list_fork(f);
 			(void)ftp_send_text(f, 226, "Directory send OK.");
 		}

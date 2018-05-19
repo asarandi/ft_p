@@ -6,13 +6,13 @@
 #    By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/09/20 17:41:00 by asarandi          #+#    #+#              #
-#    Updated: 2018/05/18 10:26:35 by asarandi         ###   ########.fr        #
+#    Updated: 2018/05/19 08:10:35 by asarandi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		=	libft.a
 CC			=	gcc
-CFLAGS		=	-O2 -Wall -Werror -Wextra
+CFLAGS		=	-g -Wall -Werror -Wextra -Wno-unused-result
 INC			=	-I inc/
 SRCFILES	=	ft_atoi.c \
 				ft_base64encode.c \
@@ -82,7 +82,7 @@ SRCFILES	=	ft_atoi.c \
 				get_next_line.c \
 				ft_printf_add_precision.c \
 				ft_printf_add_width.c \
-				ft_printf_colos.c \
+				ft_printf_colors.c \
 				ft_printf_float_cosmetics.c \
 				ft_printf_format_csws.c \
 				ft_printf_format_ioux.c \
