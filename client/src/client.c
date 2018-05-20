@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/10 02:02:26 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 21:17:25 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/20 01:46:26 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,13 +248,12 @@ int	cmd_pasv(t_ftp *f)
 int cmd_cd_local(t_ftp *f)
 {
 	if (chdir(word(f->input, 1)) == 0)
-	{
 		(void)ft_printf("Directory successfully changed.\n");
-		return (1);
-	}
 	else
 		(void)ft_printf("Failed to change directory.\n");
-	return (0);
+	free(f->input);
+	f->input = NULL;
+	return (client_read_from_user(f));
 }
 
 int cmd_cd(t_ftp *f)
@@ -264,8 +263,8 @@ int cmd_cd(t_ftp *f)
 
 	if (word(f->input, 1) == NULL)
 	{
-		ft_printf("Please specify directory name.\n");
-		return (0);
+		ft_printf("Command is incomplete.\n");
+		return (client_read_from_user(f));
 	}
 	str1 = ft_strdup("CWD");
 	str2 = ft_strjoin(str1, " ");
@@ -281,6 +280,11 @@ int cmd_cd(t_ftp *f)
 
 int	cmd_ls(t_ftp *f)
 {
+	if (f->input_copy != NULL)
+	{
+		free(f->input_copy);
+	}
+	f->input_copy = ft_strdup(f->input);
 	write(f->socket, "PASV\r\n", 6);
 	f->passive_cmd = 1;
 	return (1);
@@ -292,12 +296,14 @@ int cmd_ls_2(t_ftp *f)
 	char	*str2;
 
 	str1 = ft_strdup("LIST");
-	if (word(f->input, 1) != NULL)
+	if ((f->input_copy != NULL) && (word(f->input_copy, 1) != NULL))
 	{
 		str2 = ft_strjoin(str1, " ");
 		free(str1);
-		str1 = ft_strjoin(str2, word(f->input, 1));
+		str1 = ft_strjoin(str2, word(f->input_copy, 1));
 		free(str2);
+		free(f->input_copy);
+		f->input_copy = NULL;
 	}
 	str2 = ft_strjoin(str1, "\r\n");
 	write(f->socket, str2, ft_strlen(str2));
@@ -305,8 +311,22 @@ int cmd_ls_2(t_ftp *f)
 	return (1);
 }
 
+int	cmd_ls_3(t_ftp *f)
+{
+	f->passive->passive_output_fd = STDOUT_FILENO;
+	client_read_passive(f->passive);
+	close(f->passive->socket);
+	f->passive_cmd = 0;
+	return (1);
+}
+
 int	cmd_get(t_ftp *f)
 {
+	if (f->input_copy != NULL)
+	{
+		free(f->input_copy);
+	}
+	f->input_copy = ft_strdup(f->input);
 	write(f->socket, "PASV\r\n", 6);
 	f->passive_cmd = 2;
 	return (1);
@@ -320,17 +340,44 @@ int cmd_get_2(t_ftp *f)
 	str1 = ft_strdup("RETR");
 	str2 = ft_strjoin(str1, " ");
 	free(str1);
-	str1 = ft_strjoin(str2, word(f->input, 1));
+	str1 = ft_strjoin(str2, word(f->input_copy, 1));
 	free(str2);
 	str2 = ft_strjoin(str1, "\r\n");
 	write(f->socket, str2, ft_strlen(str2));
 	free(str2);
-	f->passive_file = ft_strdup(word(f->input, 1));
+	f->passive_file = ft_strdup(word(f->input_copy, 1));
+	free(f->input_copy);
+	f->input_copy = NULL;
+	return (1);
+}
+
+int	cmd_get_3(t_ftp *f)
+{
+	if ((f->passive->passive_output_fd = open(f->passive_file,
+					O_CREAT | O_TRUNC | O_WRONLY, 0644)) > 0)
+	{
+		ft_printf("{green}downloading file to local folder ... {eoc}");
+		client_read_passive(f->passive);
+		close(f->passive->passive_output_fd);
+		ft_printf("{green}done\n{eoc}");
+	}
+	else
+		ft_printf("{red}error opening file ..\n");
+	close(f->passive->socket);
+	if (f->passive_file != NULL)
+		free(f->passive_file);
+	f->passive_file = NULL;
+	f->passive_cmd = 0;
 	return (1);
 }
 
 int	cmd_put(t_ftp *f)
 {
+	if (f->input_copy != NULL)
+	{
+		free(f->input_copy);
+	}
+	f->input_copy = ft_strdup(f->input);
 	write(f->socket, "PASV\r\n", 6);
 	f->passive_cmd = 3;
 	return (1);
@@ -344,12 +391,37 @@ int cmd_put_2(t_ftp *f)
 	str1 = ft_strdup("STOR");
 	str2 = ft_strjoin(str1, " ");
 	free(str1);
-	str1 = ft_strjoin(str2, word(f->input, 1));
+	str1 = ft_strjoin(str2, word(f->input_copy, 1));
 	free(str2);
 	str2 = ft_strjoin(str1, "\r\n");
 	write(f->socket, str2, ft_strlen(str2));
 	free(str2);
-	f->passive_file = ft_strdup(word(f->input, 1));
+	f->passive_file = ft_strdup(word(f->input_copy, 1));
+	free(f->input_copy);
+	f->input_copy = NULL;
+	return (1);
+}
+
+int	cmd_put_3(t_ftp *f)
+{
+	int	fd;
+	char c;
+
+	if ((fd = open(f->passive_file, O_RDONLY)) > 0)
+	{
+		ft_printf("{green}uploading file to remote folder ... {eoc}");
+		while (read(fd, &c, 1) > 0)
+			write(f->passive->socket, &c, 1);
+		close(fd);
+		ft_printf("{green}done\n{eoc}");
+	}
+	else
+		ft_printf("{red}error opening file ..\n");
+	close(f->passive->socket);
+	if (f->passive_file != NULL)
+		free(f->passive_file);
+	f->passive_file = NULL;
+	f->passive_cmd = 0;
 	return (1);
 }
 
@@ -367,11 +439,28 @@ int cmd_quit(t_ftp *f)
 	return (0);
 }
 
+int	cmd_help(t_ftp *f)
+{
+	ft_printf("the following commands are recognized by the client:\n");
+	ft_printf(" ls <arg>        - list remote directory contents\n");
+	ft_printf(" ls -a <arg>     - show hidden files\n");
+	ft_printf(" cd <arg>        - change directory\n");
+	ft_printf(" get <arg>       - download a remote file to client\n");
+	ft_printf(" put <arg>       - upload a local file to server\n");
+	ft_printf(" pwd             - print working directory\n");
+	ft_printf(" quit            - close connection and quit\n");
+	ft_printf(" !<cmd> <args..> - execute a shell command\n");
+	ft_printf(" @<cmd> <arg>    - execute a raw server command\n");
+	ft_printf(" @help           - list available server commands\n");
+	return (client_read_from_user(f));
+}
+
 const char	*g_cmds[] = {
-	"!cd", "ls", "cd", "get", "put", "pwd", "quit"};
+	"!cd", "ls", "cd", "get", "put", "pwd", "quit", "help"};
 
 static int	(*g_functions[]) (t_ftp *) = {
-	&cmd_cd_local, &cmd_ls, &cmd_cd, &cmd_get, &cmd_put, &cmd_pwd, &cmd_quit};
+	&cmd_cd_local, &cmd_ls, &cmd_cd, &cmd_get, &cmd_put,
+	&cmd_pwd, &cmd_quit, &cmd_help};
 
 
 int	client_execute_shell_cmd(t_ftp *f)
@@ -387,13 +476,15 @@ int	client_execute_shell_cmd(t_ftp *f)
 	}
 	else if (pid == 0)
 	{
-		execv(argv[0], argv);
+		execvp(argv[0], argv);
 		exit(0);
 	}
 	else
 		wait4(pid, NULL, 0, NULL);
 	destroy_char_array(argv);
-	return (1);
+	free(f->input);
+	f->input = NULL;
+	return (client_read_from_user(f));
 }
 
 int	client_send_raw(t_ftp *f)
@@ -414,7 +505,11 @@ int	client_read_from_user(t_ftp *f)
 		if (ft_strlen(f->input) > 0)
 		{
 			(void)client_execute_command(f);
-			free(f->input);
+			if (f->input != NULL)
+			{
+				free(f->input);
+				f->input = NULL;
+			}
 			return (1);
 		}
 		free(f->input);
@@ -430,8 +525,9 @@ int	client_execute_command(t_ftp *f)
 	i = 0;
 	while (i < CMD_COUNT)
 	{
-		if (ft_strnicmp(word(f->input, 0), g_cmds[i],
-					ft_strlen(g_cmds[i])) == 0)
+		if ((word(f->input, 0) != NULL) && 
+				(ft_strnicmp(word(f->input, 0), g_cmds[i],
+					ft_strlen(g_cmds[i])) == 0))
 			return (g_functions[i](f));
 		i++;
 	}
@@ -577,12 +673,22 @@ int	client_loop(t_ftp *f)
 			(void)cmd_get_2(f);
 		else if (f->passive_cmd == 3)
 			(void)cmd_put_2(f);
+		else
+			(void)client_read_from_user(f);
 		(void)client_read_from_server(f);
 	}
 	if ((code = ft_atoi(f->buf)) == 150)
 	{
-		f->passive->passive_output_fd = STDOUT_FILENO;
-		client_read_passive(f->passive);
+//		f->passive->passive_output_fd = STDOUT_FILENO;
+//		client_read_passive(f->passive);
+		if (f->passive_cmd == 1)
+			cmd_ls_3(f);
+		else if (f->passive_cmd == 2)
+			cmd_get_3(f);
+		else if (f->passive_cmd == 3)
+			cmd_put_3(f);
+		else
+			(void)client_read_from_user(f);
 		if (client_read_from_server(f) != 1)
 			return (0);
 	}

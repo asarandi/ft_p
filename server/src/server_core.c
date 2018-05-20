@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:47:59 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 12:53:23 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/20 00:48:08 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,12 @@ int		server_loop(t_ftp *f)
 			f->client_addr, f->client_port);
 	(void)write(STDOUT_FILENO, f->buf, f->buf_len);
 	if (((f->req = request_split(f->buf)) == NULL) || (f->req[0] == NULL))
-		return (1);
-	i = 0;
+		i = CMD_COUNT;
+	else
+		i = 0;
 	while (i < CMD_COUNT)
 	{
-		if (ft_stricmp(f->req[0], g_cmds[i]) == 0)
+		if (ft_strnicmp(f->req[0], g_cmds[i], ft_strlen(g_cmds[i])) == 0)
 		{
 			(void)g_functions[i](f);
 			break ;

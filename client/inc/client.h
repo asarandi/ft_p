@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 17:07:05 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 20:12:48 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/20 01:31:14 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 # define E_FORK				"error: fork() failed\n"
 # define E_GETADDRINFO		"error: getaddrinfo() failed\n"
 # define E_CONNECT			"error: failed to connect\n"
-# define CMD_COUNT			7
+# define CMD_COUNT			8
 # define BIN_LS				"/bin/ls"
 
 typedef struct			s_ftp
@@ -66,6 +66,7 @@ typedef struct			s_ftp
 	char				*error;
 	int					status;
 	char				*input;
+	char				*input_copy;
 	char				buf[1024];
 	ssize_t				buf_len;
 	char				**req;

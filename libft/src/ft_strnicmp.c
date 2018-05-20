@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/20 15:40:36 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 21:16:48 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 21:49:27 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,8 @@ int	ft_strnicmp(const char *s1, const char *s2, size_t n)
 				b += 'a' - 'A';
 		}
 		if (a != b)
-			return ((unsigned char)(a - b));
-		else
-			i++;
+			break ;
+		i++;
 	}
 	if (i == n)
 		return (0);
