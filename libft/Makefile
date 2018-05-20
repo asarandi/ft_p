@@ -6,7 +6,7 @@
 #    By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/09/20 17:41:00 by asarandi          #+#    #+#              #
-#    Updated: 2018/05/19 08:10:35 by asarandi         ###   ########.fr        #
+#    Updated: 2018/05/19 18:21:01 by asarandi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,6 +55,7 @@ SRCFILES	=	ft_atoi.c \
 				ft_strdel.c \
 				ft_strdup.c \
 				ft_strequ.c \
+				ft_stricmp.c \
 				ft_striter.c \
 				ft_striteri.c \
 				ft_strjoin.c \
@@ -67,6 +68,7 @@ SRCFILES	=	ft_atoi.c \
 				ft_strncpy.c \
 				ft_strnequ.c \
 				ft_strnew.c \
+				ft_strnicmp.c \
 				ft_strnstr.c \
 				ft_strrchr.c \
 				ft_strreplace.c \

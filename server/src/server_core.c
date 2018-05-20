@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:47:59 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 08:13:35 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/19 12:53:23 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int		server_loop(t_ftp *f)
 	i = 0;
 	while (i < CMD_COUNT)
 	{
-		if (ft_strcmp(f->req[0], g_cmds[i]) == 0)
+		if (ft_stricmp(f->req[0], g_cmds[i]) == 0)
 		{
 			(void)g_functions[i](f);
 			break ;
