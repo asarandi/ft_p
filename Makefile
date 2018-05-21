@@ -11,12 +11,14 @@ server: $(LIBFT) $(SERVER)
 
 server/server:
 	make -C server/
+	ln -s server/server ftp_server
 
 server_clean:
 	make clean -C server/
 
 server_fclean:
 	make fclean -C server/
+	rm -f ftp_server
 
 ###############################################################
 
@@ -24,12 +26,14 @@ client: $(LIBFT) $(CLIENT)
 
 client/client:
 	make -C client/
+	ln -s client/client ftp_client
 
 client_clean:
 	make clean -C client/
 
 client_fclean:
 	make fclean -C client/
+	rm -f ftp_client
 
 ###############################################################
 
