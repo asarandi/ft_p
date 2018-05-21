@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/10 02:02:26 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/20 01:46:26 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/20 21:07:01 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,10 @@ void	sigint_handler(int signo)
 		ft_fprintf(STDERR_FILENO, "Terminating client...\n");
 		g_ftp->running = 0;
 		close(g_ftp->socket);
+		if (g_ftp->passive != NULL)
+			close(g_ftp->passive->socket);
 	}
 }
-
 
 void	client_cleanup(t_ftp *f)
 {
@@ -107,17 +108,26 @@ void	client_exit(t_ftp *f, char *msg, int exit_code)
 	exit(exit_code);
 }
 
+int	socket_set_hints(t_ftp *f)
+{
+	f->hints.ai_family = PF_UNSPEC;
+	f->hints.ai_socktype = SOCK_STREAM;
+	return (1);
+}
+
+int	socket_return_error(t_ftp *f, char *e)
+{
+	f->error = e;
+	return (0);
+}
+
 int	socket_connect(t_ftp *f)
 {
 	struct	sockaddr_in	*in;
 
-	f->hints.ai_family = PF_UNSPEC;
-	f->hints.ai_socktype = SOCK_STREAM;
+	(void)socket_set_hints(f);
 	if (getaddrinfo(f->connect_addr, f->connect_port, &f->hints, &f->res0) != 0)
-	{
-		f->error = E_GETADDRINFO;
-		return (0);
-	}
+		return (socket_return_error(f, E_GETADDRINFO));
 	f->res = f->res0;
 	while (f->res != NULL)
 	{
@@ -134,8 +144,7 @@ int	socket_connect(t_ftp *f)
 	}
 	freeaddrinfo(f->res0);
 	f->res0 = NULL;
-	f->error = E_CONNECT;
-	return (0);
+	return (socket_return_error(f, E_CONNECT));
 }
 
 void	client_connect(t_ftp *f)
@@ -144,7 +153,8 @@ void	client_connect(t_ftp *f)
 
 	f->home = getcwd(NULL, 0);
 	f->bin_ls = BIN_LS;
-	ft_printf("{yellow}attempting connection ... {eoc}");
+	ft_printf("{yellow}attempting connection to [%s:%s]... {eoc}",
+			f->connect_addr, f->connect_port);
 	if (socket_connect(f) != 1)
 		client_exit(f, f->error, EXIT_FAILURE);
 	in = (struct sockaddr_in *)f->res->ai_addr;
@@ -161,18 +171,15 @@ void	client_show_usage(t_ftp *f)
 {
 	ft_printf("welcome to %s\n", FTP_CLIENT_NAME);
 	ft_printf("usage:\t%s <ip.ad.dr.es> <port>\n", f->argv[0]);
-	ft_printf(" or\t%s <port>\n", f->argv[0]);
+	ft_printf(" or\t%s <ip.ad.dr.es>\n", f->argv[0]);
 	ft_printf(" or\t%s\n", f->argv[0]);
 	client_exit(f, "", 0);
 }
 
-void	client_parse(t_ftp *f, int argc, char **argv, char **envp)
+void	client_parse(t_ftp *f)
 {
 	int	i;
 
-	f->argc = argc;
-	f->argv = argv;
-	f->envp = envp;
 	if (f->argc > 3)
 		client_show_usage(f);
 	i = 1;
@@ -197,11 +204,35 @@ void	client_parse(t_ftp *f, int argc, char **argv, char **envp)
 	}
 }
 
+int	client_read_flag_util(t_ftp *f, int *i, int *flag)
+{
+	if ((*i < 3) && (ft_isdigit(f->buf[*i])))
+		(*flag)++;
+	if ((*i == 3) && (*flag == 3))
+	{
+		if (ft_isspace(f->buf[*i]))
+			(*flag)++;
+		else
+			(*flag) = 0;
+	}
+	if (f->buf[*i] == '\n')
+	{
+		if (*flag == 4)
+			(*flag)++;
+		else
+		{
+			(*flag) = 0;
+			(*i) = -1;
+			(void)ft_bzero(f->buf, sizeof(f->buf));
+		}
+	}
+	return (1);
+}
+
 int	client_read_from_server(t_ftp *f)
 {
 	int	flag;
 	int	i;
-	int	r;
 
 	(void)ft_printf("{cyan}[%s:%d]: {eoc}",
 			f->print_addr, f->print_port);
@@ -210,32 +241,13 @@ int	client_read_from_server(t_ftp *f)
 	(void)ft_bzero(f->buf, sizeof(f->buf));
 	while (flag != 5)
 	{
-		r = recv(f->socket, &f->buf[i], 1, 0);
-		if (r <= 0)
+		if (recv(f->socket, &f->buf[i], 1, 0) <= 0)
 			return (0);
 		write(STDOUT_FILENO, &f->buf[i], 1);
-		if ((i < 3) && (ft_isdigit(f->buf[i])))
-			flag++;
-		if ((i == 3) && (flag == 3))
-		{
-			if (ft_isspace(f->buf[i]))
-				flag++;
-			else
-				flag = 0;
-		}
-		if (f->buf[i] == '\n')
-		{
-			if (flag == 4)
-				flag++;
-			else
-			{
-				flag = 0;
-				i = -1;
-				(void)ft_bzero(f->buf, sizeof(f->buf));
-			}
-		}
+		(void)client_read_flag_util(f, &i, &flag);		
 		i++;
 	}
+	f->response_code = ft_atoi(word(f->buf, 0));
 	return (1);
 }
 
@@ -266,12 +278,9 @@ int cmd_cd(t_ftp *f)
 		ft_printf("Command is incomplete.\n");
 		return (client_read_from_user(f));
 	}
-	str1 = ft_strdup("CWD");
-	str2 = ft_strjoin(str1, " ");
-	free(str1);
-	str1 = ft_strjoin(str2, word(f->input, 1));
-	free(str2);
+	str1 = ft_strjoin("CWD ", word(f->input, 1));
 	str2 = ft_strjoin(str1, "\r\n");
+	free(str1);
 	write(f->socket, str2, ft_strlen(str2));
 	free(str2);
 	return (1);
@@ -295,17 +304,16 @@ int cmd_ls_2(t_ftp *f)
 	char	*str1;
 	char	*str2;
 
-	str1 = ft_strdup("LIST");
 	if ((f->input_copy != NULL) && (word(f->input_copy, 1) != NULL))
 	{
-		str2 = ft_strjoin(str1, " ");
-		free(str1);
-		str1 = ft_strjoin(str2, word(f->input_copy, 1));
-		free(str2);
+		str1 = ft_strjoin("LIST ", word(f->input_copy, 1));
 		free(f->input_copy);
 		f->input_copy = NULL;
 	}
+	else
+		str1 = ft_strdup("LIST");
 	str2 = ft_strjoin(str1, "\r\n");
+	free(str1);
 	write(f->socket, str2, ft_strlen(str2));
 	free(str2);
 	return (1);
@@ -337,12 +345,9 @@ int cmd_get_2(t_ftp *f)
 	char	*str1;
 	char	*str2;
 
-	str1 = ft_strdup("RETR");
-	str2 = ft_strjoin(str1, " ");
-	free(str1);
-	str1 = ft_strjoin(str2, word(f->input_copy, 1));
-	free(str2);
+	str1 = ft_strjoin("RETR ", word(f->input_copy, 1));
 	str2 = ft_strjoin(str1, "\r\n");
+	free(str1);
 	write(f->socket, str2, ft_strlen(str2));
 	free(str2);
 	f->passive_file = ft_strdup(word(f->input_copy, 1));
@@ -388,12 +393,9 @@ int cmd_put_2(t_ftp *f)
 	char	*str1;
 	char	*str2;
 
-	str1 = ft_strdup("STOR");
-	str2 = ft_strjoin(str1, " ");
-	free(str1);
-	str1 = ft_strjoin(str2, word(f->input_copy, 1));
-	free(str2);
+	str1 = ft_strjoin("STOR ", word(f->input_copy, 1));
 	str2 = ft_strjoin(str1, "\r\n");
+	free(str1);
 	write(f->socket, str2, ft_strlen(str2));
 	free(str2);
 	f->passive_file = ft_strdup(word(f->input_copy, 1));
@@ -410,10 +412,13 @@ int	cmd_put_3(t_ftp *f)
 	if ((fd = open(f->passive_file, O_RDONLY)) > 0)
 	{
 		ft_printf("{green}uploading file to remote folder ... {eoc}");
-		while (read(fd, &c, 1) > 0)
+		while ((read(fd, &c, 1) > 0) && (f->running == 1))
 			write(f->passive->socket, &c, 1);
 		close(fd);
-		ft_printf("{green}done\n{eoc}");
+		if (f->running == 0)
+			ft_printf("{red}aborted{eoc}\n");
+		else
+			ft_printf("{green}done{eoc}\n");
 	}
 	else
 		ft_printf("{red}error opening file ..\n");
@@ -500,7 +505,7 @@ int	client_send_raw(t_ftp *f)
 int	client_read_from_user(t_ftp *f)
 {
 	(void)ft_printf("{magenta}%s {eoc}", CLIENT_PROMPT);
-	while (get_next_line(STDIN_FILENO, &f->input) > 0)
+	while ((get_next_line(STDIN_FILENO, &f->input) > 0) && (f->running == 1))
 	{
 		if (ft_strlen(f->input) > 0)
 		{
@@ -638,7 +643,7 @@ int	client_parse_passive(t_ftp *f)
 
 int	client_read_passive(t_ftp *p)
 {
-	while (1)
+	while (g_ftp->running == 1)
 	{
 		ft_bzero(p->buf, sizeof(p->buf));
 		p->buf_len = read(p->socket, p->buf, sizeof(p->buf) - 1);
@@ -646,51 +651,64 @@ int	client_read_passive(t_ftp *p)
 			break ;
 		write(p->passive_output_fd, p->buf, p->buf_len);
 	}
+	if (g_ftp->running == 0)
+		ft_printf("{red}aborted{eoc}\n");
 	return (1);
+}
+
+int	client_init_passive(t_ftp *f)
+{
+	if (client_parse_passive(f) != 1)
+		return (0);
+	f->passive = ft_memalloc(sizeof(struct s_ftp));
+	f->passive->connect_addr = f->passive_ip;
+	f->passive->connect_port = f->passive_port;
+	if (socket_connect(f->passive) != 1)
+	{
+		free(f->passive);
+		f->passive = NULL;
+		return (0);
+	}
+	f->use_passive = 1;
+	if (f->passive_cmd == 1)
+		(void)cmd_ls_2(f);
+	else if (f->passive_cmd == 2)
+		(void)cmd_get_2(f);
+	else if (f->passive_cmd == 3)
+		(void)cmd_put_2(f);
+	else
+		(void)client_read_from_user(f);
+	(void)client_read_from_server(f);
+	return (1);
+}
+
+
+int	client_passive_data(t_ftp *f)
+{
+	if (f->passive_cmd == 1)
+		cmd_ls_3(f);
+	else if (f->passive_cmd == 2)
+		cmd_get_3(f);
+	else if (f->passive_cmd == 3)
+		cmd_put_3(f);
+	else
+		(void)client_read_from_user(f);
+	return (client_read_from_server(f));
 }
 
 int	client_loop(t_ftp *f)
 {
-	int	code;
-
 	if (client_read_from_user(f) != 1)
 		return (0);
 	if (client_read_from_server(f) != 1)
 		return (0);
-	if ((code = ft_atoi(f->buf)) == 227)
+	if (f->response_code == 227)
+		(void)client_init_passive(f);
+	if (f->response_code == 150)
 	{
-		if (client_parse_passive(f) != 1)
-			return (0);
-		f->passive = ft_memalloc(sizeof(struct s_ftp));
-		f->passive->connect_addr = f->passive_ip;
-		f->passive->connect_port = f->passive_port;
-		f->use_passive = 1;
-		if (socket_connect(f->passive) != 1)
-			return (0);
-		if (f->passive_cmd == 1)
-			(void)cmd_ls_2(f);
-		else if (f->passive_cmd == 2)
-			(void)cmd_get_2(f);
-		else if (f->passive_cmd == 3)
-			(void)cmd_put_2(f);
-		else
-			(void)client_read_from_user(f);
-		(void)client_read_from_server(f);
-	}
-	if ((code = ft_atoi(f->buf)) == 150)
-	{
-//		f->passive->passive_output_fd = STDOUT_FILENO;
-//		client_read_passive(f->passive);
-		if (f->passive_cmd == 1)
-			cmd_ls_3(f);
-		else if (f->passive_cmd == 2)
-			cmd_get_3(f);
-		else if (f->passive_cmd == 3)
-			cmd_put_3(f);
-		else
-			(void)client_read_from_user(f);
-		if (client_read_from_server(f) != 1)
-			return (0);
+		(void)client_passive_data(f);
+		free(f->passive);
+		f->passive = NULL;
 	}
 	return (1);
 }
@@ -700,9 +718,12 @@ void	client_start(int argc, char **argv, char **envp)
 	t_ftp	*f;
 
 	f = ft_memalloc(sizeof(t_ftp));
+	f->argc = argc;
+	f->argv = argv;
+	f->envp = envp;
 	f->running = 1;
 	g_ftp = f;
-	client_parse(f, argc, argv, envp);
+	client_parse(f);
 	client_connect(f);
 	(void)client_read_from_server(f);
 	while (f->running == 1)
@@ -714,9 +735,7 @@ void	client_start(int argc, char **argv, char **envp)
 			break ;
 		}
 	}
-	close(f->client);
-	close(f->socket);
-	client_cleanup(f);
+	client_exit(f, "", EXIT_SUCCESS);
 }
 
 int		main(int argc, char **argv, char **envp)

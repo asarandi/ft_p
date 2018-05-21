@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 11:40:50 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 21:06:50 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/20 19:24:37 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int cmd_quit(t_ftp *f);
 void	client_cleanup(t_ftp *f);
 void	client_connect(t_ftp *f);
 void	client_exit(t_ftp *f, char *msg, int exit_code);
-void	client_parse(t_ftp *f, int argc, char **argv, char **envp);
+void	client_parse(t_ftp *f);
 void	client_show_usage(t_ftp *f);
 void	client_start(int argc, char **argv, char **envp);
 void	destroy_char_array(char **array);

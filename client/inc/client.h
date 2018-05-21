@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 17:07:05 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/20 01:31:14 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/20 19:10:12 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ typedef struct			s_ftp
 	char				buf[1024];
 	ssize_t				buf_len;
 	char				**req;
+	int					response_code;
 	int					use_passive;
 	int					running;
 	int					passive_cmd;	//ls - 1,  get - 2,  put - 3
