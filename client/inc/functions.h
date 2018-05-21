@@ -29,6 +29,7 @@ int		client_execute_shell_cmd(t_ftp *f);
 int		client_init_passive(t_ftp *f);
 int		client_loop(t_ftp *f);
 int		client_parse_passive(t_ftp *f);
+int		client_passive_cleanup(t_ftp *f);
 int		client_passive_data(t_ftp *f);
 int		client_read_flag_util(t_ftp *f, int *i, int *flag);
 int		client_read_from_server(t_ftp *f);

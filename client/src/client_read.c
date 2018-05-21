@@ -75,7 +75,11 @@ int	client_read_from_user(t_ftp *f)
 			return (1);
 		}
 		free(f->input);
+		f->input = NULL;
 		continue ;
 	}
+	if (f->input != NULL)
+		free(f->input);
+	f->input = NULL;
 	return (0);
 }

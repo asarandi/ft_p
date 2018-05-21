@@ -27,8 +27,6 @@ int	socket_return_error(t_ftp *f, char *e)
 
 int	socket_connect(t_ftp *f)
 {
-	struct sockaddr_in	*in;
-
 	(void)socket_set_hints(f);
 	if (getaddrinfo(f->connect_addr, f->connect_port, &f->hints, &f->res0) != 0)
 		return (socket_return_error(f, E_GETADDRINFO));
@@ -39,7 +37,6 @@ int	socket_connect(t_ftp *f)
 				f->res->ai_socktype, f->res->ai_protocol);
 		if (f->socket != -1)
 		{
-			in = (struct sockaddr_in *)f->res->ai_addr;
 			if (connect(f->socket, f->res->ai_addr, f->res->ai_addrlen) != -1)
 				return (1);
 			close(f->socket);

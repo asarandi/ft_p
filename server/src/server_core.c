@@ -88,5 +88,6 @@ int		server_loop(t_ftp *f)
 	if (i == CMD_COUNT)
 		(void)ftp_send_text(f, 502, "Command not implemented.");
 	(void)destroy_char_array(f->req);
+	f->req = NULL;
 	return (1);
 }

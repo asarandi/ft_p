@@ -32,6 +32,25 @@ void	client_connect(t_ftp *f)
 	return ;
 }
 
+int		client_passive_cleanup(t_ftp *f)
+{
+	if (f->passive_ip != NULL)
+		free(f->passive_ip);
+	f->passive_ip = NULL;
+	if (f->passive_port != NULL)
+		free(f->passive_port);
+	f->passive_port = NULL;
+	if (f->passive != NULL)
+	{
+		close(f->passive->socket);
+		if (f->passive->res0 != NULL)
+			freeaddrinfo(f->passive->res0);
+		free(f->passive);
+	}
+	f->passive = NULL;
+	return (1);
+}
+
 int		client_loop(t_ftp *f)
 {
 	if (client_read_from_user(f) != 1)
@@ -43,8 +62,7 @@ int		client_loop(t_ftp *f)
 	if (f->response_code == 150)
 	{
 		(void)client_passive_data(f);
-		free(f->passive);
-		f->passive = NULL;
+		(void)client_passive_cleanup(f);
 	}
 	return (1);
 }

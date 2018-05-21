@@ -24,6 +24,8 @@ int		ftp_send_text(t_ftp *f, int code, char *str)
 
 void	server_cleanup(t_ftp *f)
 {
+	if (f->req != NULL)
+		destroy_char_array(f->req);
 	if (f->home != NULL)
 		free(f->home);
 	free(f);

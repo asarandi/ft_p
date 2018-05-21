@@ -15,12 +15,17 @@
 void	client_cleanup(t_ftp *f)
 {
 	close(f->socket);
+	(void)client_passive_cleanup(f);
 	if (f->passive_ip != NULL)
 		free(f->passive_ip);
 	if (f->passive_port != NULL)
 		free(f->passive_port);
 	if (f->passive != NULL)
 		free(f->passive);
+	if (f->input != NULL)
+		free(f->input);
+	if (f->input_copy != NULL)
+		free(f->input_copy);
 	if (f->req != NULL)
 		destroy_char_array(f->req);
 	if (f->home != NULL)
