@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 17:07:05 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/20 19:10:12 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/20 21:51:47 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,6 @@ typedef struct			s_ftp
 	struct addrinfo		hints;
 	struct addrinfo		*res;
 	struct addrinfo		*res0;
-
-
-	
 	socklen_t			addr_len;
 	struct sockaddr_in	address;
 	int					client;
@@ -73,7 +70,7 @@ typedef struct			s_ftp
 	int					response_code;
 	int					use_passive;
 	int					running;
-	int					passive_cmd;	//ls - 1,  get - 2,  put - 3
+	int					passive_cmd;
 	char				*passive_file;
 	char				*passive_ip;
 	char				*passive_port;

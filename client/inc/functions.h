@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 11:40:50 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/20 19:24:37 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/20 21:51:11 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,28 +22,36 @@ char	*str_char_index(char *str, char c, int index);
 char	*word(char *str, int index);
 int		count_char_array(char **array);
 int		main(int argc, char **argv, char **envp);
-int	client_execute_command(t_ftp *f);
-int	client_execute_shell_cmd(t_ftp *f);
-int	client_loop(t_ftp *f);
-int	client_parse_passive(t_ftp *f);
-int	client_read_from_server(t_ftp *f);
-int	client_read_from_user(t_ftp *f);
-int	client_read_passive(t_ftp *p);
-int	client_send_raw(t_ftp *f);
-int	cmd_get(t_ftp *f);
-int	cmd_ls(t_ftp *f);
-int	cmd_pasv(t_ftp *f);
-int	cmd_put(t_ftp *f);
-int	socket_connect(t_ftp *f);
-int	str_char_count(char *str, char c);
-int	str_char_replace(char *str, char a, char b);
-int cmd_cd(t_ftp *f);
-int cmd_cd_local(t_ftp *f);
-int cmd_get_2(t_ftp *f);
-int cmd_ls_2(t_ftp *f);
-int cmd_put_2(t_ftp *f);
-int cmd_pwd(t_ftp *f);
-int cmd_quit(t_ftp *f);
+int		str_char_count(char *str, char c);
+int		str_char_replace(char *str, char a, char b);
+int		client_execute_command(t_ftp *f);
+int		client_execute_shell_cmd(t_ftp *f);
+int		client_init_passive(t_ftp *f);
+int		client_loop(t_ftp *f);
+int		client_parse_passive(t_ftp *f);
+int		client_passive_data(t_ftp *f);
+int		client_read_flag_util(t_ftp *f, int *i, int *flag);
+int		client_read_from_server(t_ftp *f);
+int		client_read_from_user(t_ftp *f);
+int		client_read_passive(t_ftp *p);
+int		client_send_raw(t_ftp *f);
+int		cmd_cd(t_ftp *f);
+int		cmd_cd_local(t_ftp *f);
+int		cmd_pwd(t_ftp *f);
+int		cmd_quit(t_ftp *f);
+int		cmd_help(t_ftp *f);
+int		cmd_get(t_ftp *f);
+int		cmd_get_2(t_ftp *f);
+int		cmd_get_3(t_ftp *f);
+int		cmd_ls(t_ftp *f);
+int		cmd_ls_2(t_ftp *f);
+int		cmd_ls_3(t_ftp *f);
+int		cmd_put(t_ftp *f);
+int		cmd_put_2(t_ftp *f);
+int		cmd_put_3(t_ftp *f);
+int		socket_connect(t_ftp *f);
+int		socket_return_error(t_ftp *f, char *e);
+int		socket_set_hints(t_ftp *f);
 void	client_cleanup(t_ftp *f);
 void	client_connect(t_ftp *f);
 void	client_exit(t_ftp *f, char *msg, int exit_code);

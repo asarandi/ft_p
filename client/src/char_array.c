@@ -5,12 +5,28 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/05/18 09:41:40 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 04:21:19 by asarandi         ###   ########.fr       */
+/*   Created: 2018/05/20 21:30:50 by asarandi          #+#    #+#             */
+/*   Updated: 2018/05/20 21:31:36 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "client.h"
+
+char	*char_array_find_paren(char **array)
+{
+	int	i;
+
+	if (!array)
+		return (NULL);
+	i = 0;
+	while (array[i] != NULL)
+	{
+		if (array[i][0] == '(')
+			return (array[i]);
+		i++;
+	}
+	return (NULL);
+}
 
 int		count_char_array(char **array)
 {
@@ -41,45 +57,4 @@ void	destroy_char_array(char **array)
 		free(array);
 	}
 	return ;
-}
-
-char	*word(char *str, int index)
-{
-	int	i;
-	int	word;
-
-	if (str == NULL)
-		return (NULL);
-	i = 0;
-	word = 0;
-	while (str[i])
-	{
-		while ((str[i]) && (ft_isspace(str[i])))
-			i++;
-		if ((str[i]) && (word == index))
-			return (&str[i]);
-		if (str[i] == 0)
-			return (NULL);
-		word++;
-		while ((str[i]) && (!ft_isspace(str[i])))
-			i++;
-	}
-	return (NULL);
-}
-
-char	**request_split(char *str)
-{
-	int	i;
-
-	i = ft_strlen(str);
-	if ((i >= 2) && (str[i - 1] == '\n') && (str[i - 2] == '\r'))
-	{
-		str[i - 1] = 0;
-		str[i - 2] = 0;
-	}
-	else if ((i >= 1) && (str[i - 1] == '\n'))
-	{
-		str[i - 1] = 0;
-	}
-	return (ft_strsplit(str, ' '));
 }
