@@ -17,7 +17,7 @@ SERVER_SRC	=	char_array.c \
 SERVER_OBJ	=	$(addprefix obj/, $(SERVER_SRC:.c=.o))
 
 CC			=	gcc
-CFLAGS		=	-g -Wextra -Wall -Werror -Wno-unused-result
+CFLAGS		=	-O2 -Wextra -Wall -Werror -Wno-unused-result
 INC			=	-I ../libft/inc -I inc/
 LIBFT		=	../libft/libft.a
 

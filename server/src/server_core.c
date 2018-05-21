@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/18 09:47:59 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/20 00:48:08 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/21 02:19:11 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ int		server_loop(t_ftp *f)
 {
 	int		i;
 
-	(void)ft_bzero(f->buf, sizeof(f->buf));
 	if ((f->buf_len = recv(f->client, f->buf, sizeof(f->buf), 0)) <= 0)
 		return (0);
 	(void)ft_printf("{green}[%s:%d] recv: {eoc}",

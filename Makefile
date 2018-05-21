@@ -53,3 +53,15 @@ clean: server_clean client_clean libft_clean
 fclean: clean server_fclean client_fclean libft_fclean
 
 re: fclean all
+
+norminette:
+	norminette server/src
+	norminette server/inc
+	norminette client/src
+	norminette client/inc
+	norminette libft/src
+	norminette libft/inc
+
+norme: norminette
+
+norm: norminette

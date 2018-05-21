@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/10 02:02:26 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 04:21:32 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/21 02:19:10 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void	server_start(int argc, char **argv, char **envp)
 	server_fork(f);
 	while (f->running == 1)
 	{
+		(void)ft_bzero(f->buf, sizeof(f->buf));
 		if (server_loop(f) == 0)
 		{
 			ft_printf("{red}closed connection to: %s:%d{eoc}\n",
