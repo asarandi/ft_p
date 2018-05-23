@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/20 21:39:45 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/20 21:56:07 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/23 07:47:12 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 int	cmd_cd_local(t_ftp *f)
 {
+	if (word(f->input, 1) == NULL)
+	{
+		ft_printf("Command is incomplete.\n");
+		return (client_read_from_user(f));
+	}
 	if (chdir(word(f->input, 1)) == 0)
 		(void)ft_printf("Directory successfully changed.\n");
 	else

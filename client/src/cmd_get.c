@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/20 21:33:16 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/20 21:55:32 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/23 07:45:26 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 int	cmd_get(t_ftp *f)
 {
+	if (word(f->input, 1) == NULL)
+	{
+		ft_printf("Command is incomplete.\n");
+		return (client_read_from_user(f));
+	}
 	if (f->input_copy != NULL)
 	{
 		free(f->input_copy);

@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/20 21:28:39 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/20 21:52:50 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/23 08:30:26 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,27 +59,33 @@ int	client_read_from_server(t_ftp *f)
 	return (1);
 }
 
-int	client_read_from_user(t_ftp *f)
+int	client_free_read_buffer(t_ftp *f, int ret)
 {
-	(void)ft_printf("{magenta}%s {eoc}", CLIENT_PROMPT);
-	while ((get_next_line(STDIN_FILENO, &f->input) > 0) && (f->running == 1))
-	{
-		if (ft_strlen(f->input) > 0)
-		{
-			(void)client_execute_command(f);
-			if (f->input != NULL)
-			{
-				free(f->input);
-				f->input = NULL;
-			}
-			return (1);
-		}
-		free(f->input);
-		f->input = NULL;
-		continue ;
-	}
 	if (f->input != NULL)
 		free(f->input);
 	f->input = NULL;
-	return (0);
+	return (ret);
+}
+
+int	client_read_from_user(t_ftp *f)
+{
+	(void)ft_printf("{magenta}%s {eoc}", CLIENT_PROMPT);
+	while ((f->running == 1) &&
+			(get_next_line(STDIN_FILENO, &f->input) > 0))
+	{
+		if (f->input != NULL)
+		{
+			if (ft_strlen(f->input) < 1)
+			{
+				free(f->input);
+				f->input = NULL;
+				return (client_read_from_user(f));
+			}
+			if (client_execute_command(f) == 0)
+				break ;
+			return (client_free_read_buffer(f, 1));
+		}
+		break ;
+	}
+	return (client_free_read_buffer(f, 0));
 }

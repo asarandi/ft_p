@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/20 21:46:46 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/20 21:46:52 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/23 08:49:40 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,7 @@ void	sigint_handler(int signo)
 	if (signo == SIGINT)
 	{
 		ft_fprintf(STDERR_FILENO, "Terminating client...\n");
-		g_ftp->running = 0;
-		close(g_ftp->socket);
-		if (g_ftp->passive != NULL)
-			close(g_ftp->passive->socket);
+		client_exit(g_ftp, "", 130);
 	}
 	return ;
 }
