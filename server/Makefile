@@ -1,18 +1,21 @@
 NAME		=	ftp_server
 
-SERVER_SRC	=	char_array.c \
+SERVER_SRC	=	cleanup.c \
+				cmd_list.c \
+				cmd_retr.c \
+				cmd_stor.c \
+				dele_size_help_type_quit.c \
 				file_op.c \
-				server.c \
-				server_cmds_1.c \
-				server_cmds_2.c \
-				server_cmds_3.c \
-				server_cmds_4.c \
-				server_cmds_5.c \
-				server_core.c \
-				server_incoming.c \
-				server_sockets.c \
-				server_utils.c \
-				whitespace.c
+				incoming.c \
+				main.c \
+				parse_init_accept.c \
+				pasv_user_pass_syst_port.c \
+				pwd_cwd_cdup_mkd_rmd.c \
+				sendtext_usage_random_ipmatch.c \
+				signals.c \
+				sockets.c \
+				string_op.c \
+				worker.c
 
 SERVER_OBJ	=	$(addprefix obj/, $(SERVER_SRC:.c=.o))
 

@@ -1,50 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_cmds_1.c                                    :+:      :+:    :+:   */
+/*   cmd_list.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/05/18 09:20:11 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 09:53:07 by asarandi         ###   ########.fr       */
+/*   Created: 2018/05/23 18:55:35 by asarandi          #+#    #+#             */
+/*   Updated: 2018/05/23 18:56:24 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
-
-void	passive_cleanup(t_ftp *f)
-{
-	close(f->passive->client);
-	close(f->passive->socket);
-	free(f->passive);
-	f->use_passive = 0;
-	return ;
-}
-
-int		cmd_pasv(t_ftp *f)
-{
-	t_ftp			*c;
-	unsigned int	a;
-	unsigned short	p;
-
-	c = ft_memalloc(sizeof(t_ftp));
-	c->listen_addr = f->listen_addr;
-	c->listen_port = f->listen_port - 1;
-	incoming_create(c);
-	a = c->address.sin_addr.s_addr;
-	p = c->address.sin_port;
-	ft_printf("{blue}[%s:%d] send: {eoc}",
-			f->client_addr, f->client_port);
-	ft_printf("227 Entering Passive Mode (%d,%d,%d,%d,",
-			a & 255, a >> 8 & 255, a >> 16 & 255, a >> 24 & 255);
-	ft_printf("%d,%d).\r\n", p & 255, p >> 8 & 255);
-	ft_fprintf(f->client, "227 Entering Passive Mode (%d,%d,%d,%d,",
-			a & 255, a >> 8 & 255, a >> 16 & 255, a >> 24 & 255);
-	ft_fprintf(f->client, "%d,%d).\r\n", p & 255, p >> 8 & 255);
-	f->use_passive = 1;
-	f->passive = c;
-	return (1);
-}
 
 int		cmd_list_fork(t_ftp *f)
 {
@@ -81,9 +47,13 @@ int		cmd_list(t_ftp *f)
 	{
 		if (incoming_accept(f->passive) == 1)
 		{
-			(void)ftp_send_text(f, 150, "Here comes the directory listing.");
-			(void)cmd_list_fork(f);
-			(void)ftp_send_text(f, 226, "Directory send OK.");
+			if (ip_matches(f) == 1)
+			{
+				(void)ftp_send_text(f, 150,
+						"Here comes the directory listing.");
+				(void)cmd_list_fork(f);
+				(void)ftp_send_text(f, 226, "Directory send OK.");
+			}
 		}
 		else
 			(void)ftp_send_text(f, 450, "Directory send error.");

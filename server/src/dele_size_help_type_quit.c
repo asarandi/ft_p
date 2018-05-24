@@ -1,22 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_cmds_5.c                                    :+:      :+:    :+:   */
+/*   dele_size_help_type_quit.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/05/18 09:31:56 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 04:22:07 by asarandi         ###   ########.fr       */
+/*   Created: 2018/05/23 19:02:20 by asarandi          #+#    #+#             */
+/*   Updated: 2018/05/23 19:03:16 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-int	cmd_quit(t_ftp *f)
+int	cmd_dele(t_ftp *f)
 {
-	(void)ftp_send_text(f, 221, "Goodbye.");
-	close(f->client);
-	return (1);
+	if (unlink(word(f->buf, 1)) == 0)
+	{
+		(void)ftp_send_text(f, 250, "File deleted successfully.");
+		return (1);
+	}
+	else
+		(void)ftp_send_text(f, 550, "Failed to delete file.");
+	return (0);
 }
 
 int	cmd_size(t_ftp *f)
@@ -36,12 +41,6 @@ int	cmd_size(t_ftp *f)
 		ft_printf("213 %ld\r\n", size);
 		ft_fprintf(f->client, "213 %ld\r\n", size);
 	}
-	return (1);
-}
-
-int	cmd_type(t_ftp *f)
-{
-	ftp_send_text(f, 200, "OK.");
 	return (1);
 }
 
@@ -70,4 +69,17 @@ int	cmd_help(t_ftp *f)
 	}
 	ftp_send_text(f, 214, "Help OK.");
 	return (1);
+}
+
+int	cmd_type(t_ftp *f)
+{
+	ftp_send_text(f, 200, "OK.");
+	return (1);
+}
+
+int	cmd_quit(t_ftp *f)
+{
+	(void)ftp_send_text(f, 221, "Goodbye.");
+	close(f->client);
+	return (0);
 }

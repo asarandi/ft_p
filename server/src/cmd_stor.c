@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_cmds_2.c                                    :+:      :+:    :+:   */
+/*   cmd_stor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/05/18 09:23:25 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 04:21:47 by asarandi         ###   ########.fr       */
+/*   Created: 2018/05/23 18:56:34 by asarandi          #+#    #+#             */
+/*   Updated: 2018/05/23 18:56:51 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,38 +44,13 @@ int	cmd_stor(t_ftp *f)
 	{
 		if (incoming_accept(f->passive) == 1)
 		{
-			(void)cmd_stor_receive(f);
+			if (ip_matches(f) == 1)
+			{
+				(void)cmd_stor_receive(f);
+			}
 		}
 		else
 			(void)ftp_send_text(f, 450, "File receive error.");
-		passive_cleanup(f);
-		return (1);
-	}
-	else
-		(void)ftp_send_text(f, 425, "Use PORT or PASV first.");
-	return (0);
-}
-
-int	cmd_retr(t_ftp *f)
-{
-	char	*data;
-
-	if (f->use_passive == 1)
-	{
-		if (incoming_accept(f->passive) == 1)
-		{
-			if ((data = file_get_contents(word(f->buf, 1))) != NULL)
-			{
-				(void)ftp_send_text(f, 150, "Sending over file");
-				write(f->passive->client, data, file_get_size(word(f->buf, 1)));
-				free(data);
-				(void)ftp_send_text(f, 226, "File sent successfully.");
-			}
-			else
-				ftp_send_text(f, 550, "Failed to open file.");
-		}
-		else
-			(void)ftp_send_text(f, 450, "File send error.");
 		passive_cleanup(f);
 		return (1);
 	}

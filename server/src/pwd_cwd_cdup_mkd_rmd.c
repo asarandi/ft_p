@@ -1,28 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_cmds_3.c                                    :+:      :+:    :+:   */
+/*   pwd_cwd_cdup_mkd_rmd.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/05/18 09:25:41 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 04:21:53 by asarandi         ###   ########.fr       */
+/*   Created: 2018/05/23 18:59:10 by asarandi          #+#    #+#             */
+/*   Updated: 2018/05/23 18:59:59 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
-
-int	cmd_dele(t_ftp *f)
-{
-	if (unlink(word(f->buf, 1)) == 0)
-	{
-		(void)ftp_send_text(f, 250, "File deleted successfully.");
-		return (1);
-	}
-	else
-		(void)ftp_send_text(f, 550, "Failed to delete file.");
-	return (0);
-}
 
 int	cmd_rmd(t_ftp *f)
 {
@@ -70,4 +58,19 @@ int	cmd_cdup(t_ftp *f)
 	else
 		(void)ftp_send_text(f, 550, "Failed to change directory.");
 	return (0);
+}
+
+int	cmd_pwd(t_ftp *f)
+{
+	char	*str1;
+	char	*str2;
+
+	str1 = getcwd(NULL, 0);
+	str2 = ft_strjoin("\"", str1);
+	free(str1);
+	str1 = ft_strjoin(str2, "\"");
+	free(str2);
+	(void)ftp_send_text(f, 257, str1);
+	free(str1);
+	return (1);
 }

@@ -1,33 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_utils.c                                     :+:      :+:    :+:   */
+/*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/05/18 09:51:59 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 04:22:38 by asarandi         ###   ########.fr       */
+/*   Created: 2018/05/23 19:09:49 by asarandi          #+#    #+#             */
+/*   Updated: 2018/05/23 19:10:07 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-t_ftp	*g_ftp;
-
-int		ftp_send_text(t_ftp *f, int code, char *str)
+void	passive_cleanup(t_ftp *f)
 {
-	ft_printf("{blue}[%s:%d] send: {eoc}",
-			f->client_addr, f->client_port);
-	ft_printf("%d %s\r\n", code, str);
-	return (ft_fprintf(f->client, "%d %s\r\n", code, str));
+	if (f->passive != NULL)
+	{
+		close(f->passive->client);
+		close(f->passive->socket);
+		free(f->passive);
+		f->use_passive = 0;
+		f->passive = NULL;
+	}
+	return ;
 }
 
 void	server_cleanup(t_ftp *f)
 {
+	passive_cleanup(f);
 	if (f->req != NULL)
 		destroy_char_array(f->req);
-	if (f->home != NULL)
-		free(f->home);
+	close(f->client);
+	close(f->socket);
 	free(f);
 	return ;
 }
@@ -38,15 +42,4 @@ void	server_exit(t_ftp *f, char *msg, int exit_code)
 		ft_printf(msg);
 	(void)server_cleanup(f);
 	exit(exit_code);
-}
-
-void	sigint_handler(int signo)
-{
-	if (signo == SIGINT)
-	{
-		ft_fprintf(STDERR_FILENO, "Terminating server...\n");
-		g_ftp->running = 0;
-		close(g_ftp->client);
-		close(g_ftp->socket);
-	}
 }

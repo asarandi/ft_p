@@ -6,7 +6,7 @@
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 17:07:05 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/19 07:34:25 by asarandi         ###   ########.fr       */
+/*   Updated: 2018/05/23 18:45:03 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,16 @@
 # define E_FORK				"error: fork() failed\n"
 # define CMD_COUNT			18
 # define BIN_LS				"/bin/ls"
+# define RND_PORT_MIN		48000
+# define RND_PORT_MAX		60000
 
 typedef struct			s_ftp
 {
+	pid_t				pid;
+	int					rnd;
 	int					argc;
 	char				**argv;
 	char				**envp;
-	char				*home;
 	char				*bin_ls;
 	char				*listen_addr;
 	int					listen_port;
@@ -53,7 +56,6 @@ typedef struct			s_ftp
 	char				*client_addr;
 	int					client_port;
 	char				*error;
-	int					status;
 	char				buf[1024];
 	ssize_t				buf_len;
 	char				**req;

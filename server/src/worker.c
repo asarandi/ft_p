@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_core.c                                      :+:      :+:    :+:   */
+/*   worker.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asarandi <asarandi@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/05/18 09:47:59 by asarandi          #+#    #+#             */
-/*   Updated: 2018/05/21 02:19:11 by asarandi         ###   ########.fr       */
+/*   Created: 2018/05/23 19:08:43 by asarandi          #+#    #+#             */
+/*   Updated: 2018/05/23 19:20:52 by asarandi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,46 +21,6 @@ static int	(*g_functions[]) (t_ftp *) = {
 	&cmd_syst, &cmd_pasv, &cmd_port, &cmd_pwd, &cmd_cwd, &cmd_list, &cmd_stor,
 	&cmd_retr, &cmd_user, &cmd_pass, &cmd_help, &cmd_mkd, &cmd_quit, &cmd_size,
 	&cmd_type, &cmd_cdup, &cmd_dele, &cmd_rmd};
-
-void	server_init(t_ftp *f)
-{
-	f->home = getcwd(NULL, 0);
-	f->bin_ls = BIN_LS;
-	if (incoming_create(f) != 1)
-		server_exit(f, f->error, EXIT_FAILURE);
-	ft_printf("server started, listening on %s:%d\n",
-			inet_ntoa(f->address.sin_addr),
-			ntohs(f->address.sin_port));
-	(void)signal(SIGINT, sigint_handler);
-	g_ftp = f;
-	return ;
-}
-
-void	server_accept(t_ftp *f)
-{
-	if (incoming_accept(f) != 1)
-		server_exit(f, f->error, EXIT_FAILURE);
-	f->client_addr = inet_ntoa(f->address.sin_addr);
-	f->client_port = ntohs(f->address.sin_port);
-	ft_printf("{cyan}incoming connection from: %s:%d{eoc}\n",
-			f->client_addr, f->client_port);
-	ftp_send_text(f, 220, FTP_SERVER_NAME);
-}
-
-void	server_fork(t_ftp *f)
-{
-	pid_t	pid;
-
-	if ((pid = fork()) == -1)
-		ft_printf(E_FORK);
-	else if (pid == 0)
-	{
-		close(f->client);
-		close(f->socket);
-		server_start(f->argc, f->argv, f->envp);
-	}
-	return ;
-}
 
 int		server_loop(t_ftp *f)
 {
@@ -89,4 +49,18 @@ int		server_loop(t_ftp *f)
 	(void)destroy_char_array(f->req);
 	f->req = NULL;
 	return (1);
+}
+
+void	worker_routine(t_ftp *f)
+{
+	while (f->running == 1)
+	{
+		(void)ft_bzero(f->buf, sizeof(f->buf));
+		if (server_loop(f) != 1)
+			break ;
+	}
+	ft_printf("{red}closed connection to: %s:%d{eoc}\n",
+			f->client_addr, f->client_port);
+	server_exit(f, "", 0);
+	return ;
 }
