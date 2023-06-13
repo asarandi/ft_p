@@ -1,13 +1,12 @@
 NAME		=	ft_p
 SERVER		=	server/server
 CLIENT		=	client/client
-LIBFT		=	libft/libft.a
 
 all: server client
 
 ###############################################################
 
-server: $(LIBFT) $(SERVER)
+server: $(SERVER)
 
 server/server:
 	make -C server/
@@ -22,7 +21,7 @@ server_fclean:
 
 ###############################################################
 
-client: $(LIBFT) $(CLIENT)
+client: $(CLIENT)
 
 client/client:
 	make -C client/
@@ -37,20 +36,9 @@ client_fclean:
 
 ###############################################################
 
-libft/libft.a:
-	make -C libft/
+clean: server_clean client_clean
 
-libft_clean:
-	make clean -C libft/
-
-libft_fclean:
-	make fclean -C libft/
-
-###############################################################
-
-clean: server_clean client_clean libft_clean
-
-fclean: clean server_fclean client_fclean libft_fclean
+fclean: clean server_fclean client_fclean
 
 re: fclean all
 
@@ -59,8 +47,6 @@ norminette:
 	norminette server/inc
 	norminette client/src
 	norminette client/inc
-	norminette libft/src
-	norminette libft/inc
 
 norme: norminette
 
